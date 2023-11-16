@@ -4,7 +4,7 @@ import { useEffect } from "react";
 function DrumPad({ setPressedBtn }) {
   const play = (id) => {
     const audio = document.getElementById(id);
-    console.log(id);
+
     if (!audio) return;
     audio.play();
     setPressedBtn(drumPads.find((btn) => btn.key === id).description);
@@ -13,15 +13,15 @@ function DrumPad({ setPressedBtn }) {
     setClickedBtn(drumPads.find((btn) => btn.key === e.target.value));
   }
 
-  useEffect(() =>
-    document.addEventListener(
-      "keydown",
-      function (event) {
-        play(event.key.toUpperCase());
-      },
-
-      []
-    )
+  useEffect(
+    function () {
+      function pressKey(e) {
+        play(e.key.toUpperCase());
+      }
+      document.addEventListener("keydown", pressKey);
+      () => document.removeEventListener("keydown", pressKey);
+    },
+    [play]
   );
 
   return (
